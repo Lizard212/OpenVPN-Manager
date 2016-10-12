@@ -10,6 +10,8 @@ namespace OpenVPN
 {
     public class OvpnConnector
     {
+       public OvpnConnector() { }
+   
         public void Switch(string aa)
         {
 
@@ -26,13 +28,10 @@ namespace OpenVPN
             Console.WriteLine(processStartInfo.Arguments.ToString());
             processStartInfo.UseShellExecute = false;
             Process process = Process.Start(processStartInfo);
-
+            //logger.Infor(processStartInfo.Arguments.ToString());
         }
-        public void Disconnect()
-        {
-
-        }
-        public void GetInformation()
+   
+        public void GetLog()
         {
 
         }
