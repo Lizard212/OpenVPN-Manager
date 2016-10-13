@@ -16,7 +16,7 @@ namespace OpenVPN
         {
             RunCmd(configFolder, command);
         }
-        public void RunCmd( string directoryName, string command)
+        public bool RunCmd( string directoryName, string command)
         {
             string output = string.Empty;
             ProcessStartInfo processStartInfo = new ProcessStartInfo();
@@ -28,11 +28,24 @@ namespace OpenVPN
             Logger.Instance.Infor(processStartInfo.Arguments.ToString());
             Logger.Instance.Infor(processStartInfo.WorkingDirectory.ToString());
             processStartInfo.UseShellExecute = false;
-            //processStartInfo.RedirectStandardOutput = true;
+            processStartInfo.RedirectStandardOutput = true;
             
             Process process = Process.Start(processStartInfo);
-          //  StreamReader reader = process.StandardOutput;
-           // output = reader.ReadToEnd();
+            
+             while(!process.StandardOutput.EndOfStream)
+            {
+
+                string line = process.StandardOutput.ReadLine();
+                if (line.Contains("error") || line.Contains("failed"))
+                {
+                    Logger.Instance.Error("Error to connect VPN server");
+                    process.Kill();
+                    return false;
+                }
+           
+                Logger.Instance.Infor(line);
+            }
+            return true;
             //Logger.Instance.Log(output);
             //process.WaitForExit();
             //process.Close();

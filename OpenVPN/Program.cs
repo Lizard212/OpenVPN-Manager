@@ -34,13 +34,43 @@ namespace OpenVPN
                 JObject config  = new JObject();
                 config = Configuration.Instance.LoadConfig();
                 OvpnConnector connector = new OvpnConnector();
-                connector.Connect(config["config_folder"].ToString(), "/c openvpn --config " + config["key_name"].ToString());
-                Console.ReadLine();
+                //connector.Connect(config["config_folder"].ToString(), "/c openvpn --config " + config["key_name"].ToString());
+                //Environment.Exit(1);
+
+                while (true)
+                {
+                    if(config == null)
+                    {
+                        Logger.Instance.Error("Error configuration");
+                        Environment.Exit(0);
+                    }
+                    else
+                    {
+                        Common common = new Common();
+                        List<string> list_files = new List<string>();
+                        if (int.Parse(config["mode"].ToString()) == 0)
+                        {
+                            connector.Connect(config["config_folder"].ToString(), "/c openvpn --config " + config["key_name"].ToString());
+                        }
+                        else
+                        {
+                            list_files = common.GetFiles(config["config_folder"].ToString());
+                            foreach (var item in list_files)
+                            {
+                                connector.Connect(config["config_folder"].ToString(),"/c openvpn --config " +   item);
+                                System.Threading.Thread.Sleep(int.Parse(config["time_change"].ToString()));
+                            }
+                        }
+                    }
+
+
+
+                }
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.ToString());
-                Console.ReadLine();
+                Environment.Exit(0);
             }
           
             

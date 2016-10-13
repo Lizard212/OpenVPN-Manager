@@ -51,8 +51,9 @@ namespace OpenVPN
             {
                 if (jconfig["logs_level"].ToString().ToLower() != "all" && jconfig["logs_level"].ToString().ToLower() != "infor")
                 { return false; }
-                Console.WriteLine("[WARNING][" + DateTime.Now.ToString() + "]" + contents + "\n");
-                WriteFile(contents);
+                string data = "[WARNING][" + DateTime.Now.ToString() + "]" + contents + "\n";
+                Console.WriteLine(data);
+                WriteFile(data);
                 return true;
             }
             catch (Exception)
@@ -69,9 +70,10 @@ namespace OpenVPN
             {
                 if (jconfig["logs_level"].ToString().ToLower() != "all" && jconfig["logs_level"].ToString().ToLower() != "error")
                 { return false; }
-                Console.WriteLine("[ERROR][" + DateTime.Now.ToString() + "]" + contents + "\n");
+                string data = "[ERROR][" + DateTime.Now.ToString() + "]" + contents + "\n";
+                Console.WriteLine(data);
 
-                WriteFile(contents);
+                WriteFile(data);
                 return true;
             }
             catch (Exception)
