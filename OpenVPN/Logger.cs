@@ -10,11 +10,22 @@ namespace OpenVPN
 {
     public class Logger
     {
+        private static Logger instance;
+        private Logger() { jconfig = Configuration.Instance.LoadConfig(); }
+        public static Logger Instance
+        {
+            get
+            {
+                if(instance == null)
+                {
+                    instance = new Logger();
+                }
+                return instance;
+            }
+        }
        
         public JObject jconfig = new JObject();
 
-        public Configuration configuration = new Configuration();
-        public Logger() { jconfig = configuration.LoadConfig(); }
         public  bool Infor(string data)
         {
             try
@@ -23,7 +34,7 @@ namespace OpenVPN
                 {
                     return false;
                 }
-                Console.WriteLine("[INFO][" + DateTime.Now.ToString() + "]" + data);
+                Console.WriteLine("\n[INFO][" + DateTime.Now.ToString() + "]" + data + "\n");
                 return true;
             }
             catch (Exception)
@@ -40,7 +51,7 @@ namespace OpenVPN
             {
                 if (jconfig["logs_level"].ToString().ToLower() != "all" && jconfig["logs_level"].ToString().ToLower() != "infor")
                 { return false; }
-                Console.WriteLine("[WARNING][" + DateTime.Now.ToString() + "]" + contents);
+                Console.WriteLine("[WARNING][" + DateTime.Now.ToString() + "]" + contents + "\n");
                 WriteFile(contents);
                 return true;
             }
@@ -58,7 +69,8 @@ namespace OpenVPN
             {
                 if (jconfig["logs_level"].ToString().ToLower() != "all" && jconfig["logs_level"].ToString().ToLower() != "error")
                 { return false; }
-                Console.WriteLine("[ERROR][" + DateTime.Now.ToString() + "]" + contents);
+                Console.WriteLine("[ERROR][" + DateTime.Now.ToString() + "]" + contents + "\n");
+
                 WriteFile(contents);
                 return true;
             }
@@ -74,10 +86,9 @@ namespace OpenVPN
             try
             {
                 string file_path = string.Empty;
-                file_path = jconfig["logs_folder"].ToString() + jconfig["logs_file"].ToString();
-                StreamWriter file = new StreamWriter(file_path,true);
-                file.WriteLine(contents);
-                file.Close();
+                file_path = jconfig["logs_folder"].ToString() + "\\" + jconfig["logs_file"].ToString();
+                File.AppendAllText(file_path, contents + Environment.NewLine);
+ 
             }
             catch (Exception)
             {

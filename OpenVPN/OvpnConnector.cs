@@ -12,28 +12,33 @@ namespace OpenVPN
     {
        public OvpnConnector() { }
    
-        public void Switch(string aa)
+        public void Connect(string configFolder, string command)
         {
-
+            RunCmd(configFolder, command);
         }
-        public void Connect(string configFolder, string keyName)
+        public void RunCmd( string directoryName, string command)
         {
             string output = string.Empty;
             ProcessStartInfo processStartInfo = new ProcessStartInfo();
             processStartInfo.FileName =  Environment.ExpandEnvironmentVariables("%SystemRoot%") + @"\System32\cmd.exe";
             processStartInfo.Verb = "runas";
             processStartInfo.WindowStyle = ProcessWindowStyle.Hidden;
-            processStartInfo.WorkingDirectory = Path.GetDirectoryName(configFolder);
-            processStartInfo.Arguments = "/c openvpn --config " + keyName;
-            Console.WriteLine(processStartInfo.Arguments.ToString());
+            processStartInfo.WorkingDirectory = Path.GetDirectoryName(directoryName);
+            processStartInfo.Arguments = command;
+            Logger.Instance.Infor(processStartInfo.Arguments.ToString());
+            Logger.Instance.Infor(processStartInfo.WorkingDirectory.ToString());
             processStartInfo.UseShellExecute = false;
+            //processStartInfo.RedirectStandardOutput = true;
+            
             Process process = Process.Start(processStartInfo);
-            //logger.Infor(processStartInfo.Arguments.ToString());
+          //  StreamReader reader = process.StandardOutput;
+           // output = reader.ReadToEnd();
+            //Logger.Instance.Log(output);
+            //process.WaitForExit();
+            //process.Close();
+ 
         }
    
-        public void GetLog()
-        {
 
-        }
     }
 }

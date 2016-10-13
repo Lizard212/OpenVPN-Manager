@@ -11,41 +11,60 @@ namespace OpenVPN
 {
    
    public class Configuration
-    {
-        private  string config_filename = "config.json";
-        protected   JObject config = new JObject();
-       
-        
-        public   bool CheckConfig()
+    {   
+        private static Configuration instance;
+        private Configuration() {}
+        public static Configuration Instance
+        {
+            get
+            {
+                if(instance == null)
+                {
+                    instance = new Configuration();
+                }
+                return instance;
+            }
+        }
+        private string config_filename = "config.json";
+        protected JObject config = new JObject();
+        private   bool CheckConfig()
         {
             try
             {
-            //    JObject config = JObject.Parse(File.ReadAllText("config.json"));
-            //    if (config["mode"] == null)
-            //    {
+                JObject config = JObject.Parse(File.ReadAllText("config.json"));
+                if (config["mode"] == null)
+                {
 
-            //        return false;
-            //    }
-            //    if (config["key_name"] == null)
-            //    {
-            //        return false;
-            //    }
-            //    if (config["time_change"] == null)
-            //    {
-            //        return false;
-            //    }
-            //    if (config["logs_file"] == null)
-            //    {
-            //        return false;
-            //    }
-            //    if (config["logs_level"] == null)
-            //    {
-            //        return false;
-            //    }
-            //    if (config["logs_folder"] == null)
-            //    {
-            //        return false;
-            //    }
+                    return false;
+                }
+                if (config["key_name"] == null)
+                {
+                    return false;
+                }
+                if (config["time_change"] == null)
+                {
+                    return false;
+                }
+                if (config["logs_file"] == null)
+                {
+                    return false;
+                }
+                if (config["logs_level"] == null)
+                {
+                    return false;
+                }
+                if (config["logs_folder"] == null)
+                {
+                    return false;
+                }
+                if (config["config_folder"] == null )
+                {
+                    return false;
+                }
+                if (!File.Exists(config["config_folder"].ToString()))
+                {
+                    return false;
+                }
                 return true;
             }
             catch
@@ -100,6 +119,8 @@ namespace OpenVPN
 
         
     }
+
+
 
   
      

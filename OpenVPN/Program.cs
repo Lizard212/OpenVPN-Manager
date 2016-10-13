@@ -27,49 +27,15 @@ namespace OpenVPN
             try
             {
                 var handle = GetConsoleWindow();
-
                 // Hide
                 //ShowWindow(handle, SW_HIDE);
                 // Show
                 ShowWindow(handle, SW_SHOW);
-
-
-                JObject check = new JObject();
-                while (true)
-                {
-                    Configuration configuration = new Configuration();
-                    check = configuration.LoadConfig();
-                    if (check == null)
-                    {
-                        Console.WriteLine("The configration is missing.");
-                        Environment.Exit(0);
-                    }
-                    else
-                    {
-
-
-                        Common common = new Common();
-                        List<string> list_files = new List<string>();
-                        OvpnConnector connector = new OvpnConnector();
-                        if (int.Parse(check["mode"].ToString()) == 0)
-                        {
-                            connector.Connect(check["config_folder"].ToString(), check["key_name"].ToString());
-                        }
-                        else
-                        {
-                            list_files = common.GetFiles(check["config_folder"].ToString());
-                            foreach (var item in list_files)
-                            {
-                                connector.Connect(check["config_folder"].ToString(), item);
-                                System.Threading.Thread.Sleep(int.Parse(check["time_changes"].ToString()));
-                            }
-                        }
-
-
-
-                    }
-                }
-              
+                JObject config  = new JObject();
+                config = Configuration.Instance.LoadConfig();
+                OvpnConnector connector = new OvpnConnector();
+                connector.Connect(config["config_folder"].ToString(), "/c openvpn --config " + config["key_name"].ToString());
+                Console.ReadLine();
             }
             catch (Exception ex)
             {
